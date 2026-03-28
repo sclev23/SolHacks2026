@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Builder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Playfair+Display:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Playfair+Display:ital,wght@0,300;0,600;1,300&display=swap"
+          rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -309,6 +310,30 @@
             gap: 8px;
             padding-top: 4px;
         }
+
+        /* STRESS BUBBLES */
+
+    .stress-row {
+        display: flex;
+        gap: 8px;
+    }
+
+    .stress-bubble {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        color: var(--muted);
+        font-family: 'Roboto', monospace;
+        font-size: 0.78rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
+    }
+
         .stress-bubble:hover { transform: scale(1.1); border-color: var(--muted); }
 
         .stress-bubble.selected[data-level="1"] { background: #4caf7d; border-color: #4caf7d; color: var(--bg); }
