@@ -16,13 +16,13 @@ public class EventService {
     private EventRepository eventRepository;
 
     // Get every event, sorted by date then start time
-    public List<Event> getAllEvents() {
-        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
+    public List<Event> getAllEvents(String userId) {
+        return eventRepository.findByUserIdOrderByDateAscStartTimeAsc(userId);
     }
 
     // Get all events on a specific date
-    public List<Event> getEventsByDate(LocalDate date) {
-        return eventRepository.findByDate(date);
+    public List<Event> getEventsByDate(String userId, LocalDate date) {
+        return eventRepository.findByUserIdAndDate(userId, date);
     }
 
     // Get a single event by its ID
@@ -31,19 +31,21 @@ public class EventService {
     }
 
     // Create a new event
-    public Event createEvent(Event event) {
+    public Event createEvent(String userId, Event event) {
         validateEvent(event);
+        event.setUserId(userId);
         return eventRepository.save(event);
     }
 
     // Update an existing event
-    public Event updateEvent(Long id, Event updatedEvent) {
+    public Event updateEvent(String userId, Long id, Event updatedEvent) {
         // Check the event exists first
         eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
 
         validateEvent(updatedEvent);
         updatedEvent.setId(id);
+        updatedEvent.setUserId(userId);
         return eventRepository.save(updatedEvent);
     }
 

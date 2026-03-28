@@ -20,6 +20,8 @@ public class Event {
     private LocalTime endTime;
     private String color;
     private double stress;
+    @Column(name = "user_id")
+    private String userId;
 
     // --- Getters and Setters ---
 
@@ -49,4 +51,7 @@ public class Event {
 
     public double getStress() { return stress; }
     public void setStress(int stress) { this.stress = stress; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 }

@@ -13,8 +13,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     // Spring automatically implements these just from the method name:
 
     // Get all events on a specific date
-    List<Event> findByDate(LocalDate date);
+    List<Event> findByUserIdAndDate(String userId, LocalDate date);
 
     // Get all events ordered by date then start time
-    List<Event> findAllByOrderByDateAscStartTimeAsc();
+    List<Event> findByUserIdOrderByDateAscStartTimeAsc(String userId);
 }

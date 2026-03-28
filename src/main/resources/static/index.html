@@ -681,7 +681,9 @@
     // ─── API ──────────────────────────────────────────────────────────────────────
     async function fetchEvents(dateStr) {
         try {
-            const res = await fetch(`${API}/date/${dateStr}`);
+            const res = await fetch(`${API}/date/${dateStr}`, {
+                credentials: 'include'
+            });
             return await res.json();
         } catch { return []; }
     }
@@ -1018,6 +1020,7 @@
             const method = editingId ? 'PUT' : 'POST';
             const res = await fetch(url, {
                 method,
+                credentials: 'include',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
@@ -1034,7 +1037,7 @@
         if (!editingId) return;
         if (!confirm('Delete this event?')) return;
         try {
-            await fetch(`${API}/${editingId}`, {method: 'DELETE'});
+            await fetch(`${API}/${editingId}`, {method: 'DELETE', credentials: 'include'});
             newEvent();
             setView(currentView);
         } catch { alert('Could not delete event.'); }
@@ -1060,6 +1063,8 @@
             b.classList.toggle('selected', parseInt(b.dataset.level) === level);
         });
     }
+
+
 </script>
 </body>
 </html>
