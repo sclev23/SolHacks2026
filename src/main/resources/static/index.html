@@ -268,6 +268,12 @@
 
         .week-day-header.today { color: var(--accent); }
 
+        .header-stress {
+            font-size: 0.62rem;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+
         .week-time-col { border-right: 1px solid var(--border); }
         .week-time-col .time-label { border-top: 1px solid var(--border); }
 
@@ -326,7 +332,7 @@
         .month-cell:hover { background: var(--surface); }
         .month-cell.other-month { opacity: 0.3; }
 
-        .month-cell.today .month-day-num {
+        .month-cell.today .month-day-num > span:first-child {
             background: var(--accent);
             color: var(--bg);
             border-radius: 50%;
@@ -341,11 +347,16 @@
             font-size: 0.72rem;
             color: var(--muted);
             margin-bottom: 4px;
-            width: 22px;
-            height: 22px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 6px;
+            min-height: 22px;
+        }
+
+        /* ADDED alongside it */
+        .month-stress-label {
+            font-size: 0.62rem;
+            opacity: 0.9;
         }
 
         .month-event-pill {
@@ -675,6 +686,22 @@
         } catch { return []; }
     }
 
+    // ─── STRESS HELPERS ───────────────────────────────────────────────────────────
+    function avgStress(events) {
+        if (!events.length) return null;
+        const sum = events.reduce((acc, ev) => acc + (ev.stress || 0), 0);
+        return sum / events.length; // double
+    }
+
+    function stressColor(avg) {
+        if (avg === null) return null;
+        if (avg <= 1.5) return STRESS_COLORS[1];
+        if (avg <= 2.5) return STRESS_COLORS[2];
+        if (avg <= 3.5) return STRESS_COLORS[3];
+        if (avg <= 4.5) return STRESS_COLORS[4];
+        return STRESS_COLORS[5];
+    }
+
     // ─── DAY VIEW ─────────────────────────────────────────────────────────────────
     function renderDayView() {
         const wrap = document.getElementById('scheduleWrap');
@@ -718,6 +745,24 @@
         const emptyState = document.getElementById('emptyState');
         document.querySelectorAll('.event-block').forEach(el => el.remove());
         if (emptyState) emptyState.style.display = events.length === 0 ? 'block' : 'none';
+
+        // Show daily avg stress above the grid
+        let stressDisplay = document.getElementById('dayStressDisplay');
+        if (!stressDisplay) {
+            stressDisplay = document.createElement('div');
+            stressDisplay.id = 'dayStressDisplay';
+            stressDisplay.style.cssText = 'font-size:0.72rem;padding:6px 12px;text-align:right;letter-spacing:0.04em;position:sticky;top:0;z-index:4;background:var(--bg);border-bottom:1px solid var(--border);';
+            document.getElementById('scheduleWrap').prepend(stressDisplay);
+        }
+        const avg   = avgStress(events);
+        const color = stressColor(avg);
+        if (avg !== null) {
+            stressDisplay.textContent  = `Stress: ${avg.toFixed(2)}`;
+            stressDisplay.style.color  = color;
+        } else {
+            stressDisplay.textContent = '';
+        }
+
         const col = document.getElementById('eventsCol');
         events.forEach(ev => placeEventBlock(ev, col));
     }
@@ -768,6 +813,9 @@
         const wrap = document.getElementById('scheduleWrap');
         wrap.innerHTML = '';
 
+        // Fetch first so headers can be stress-colored immediately
+        const allEvents = await Promise.all(days.map(d => fetchEvents(toDateString(d))));
+
         const grid = document.createElement('div');
         grid.className = 'week-grid';
 
@@ -776,11 +824,18 @@
         corner.style.cssText = 'border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:6;';
         grid.appendChild(corner);
 
-        // Day headers
-        days.forEach(d => {
+        // Day headers — colored by avg stress
+        days.forEach((d, i) => {
+            const avg   = avgStress(allEvents[i]);
+            const color = stressColor(avg);
             const h = document.createElement('div');
             h.className = 'week-day-header' + (isToday(d) ? ' today' : '');
-            h.textContent = `${DAYS[d.getDay()]} ${d.getDate()}`;
+            h.innerHTML = `<span>${DAYS[d.getDay()]} ${d.getDate()}</span>${avg !== null ? `<span class="header-stress" style="color:${color}">&nbsp;· Stress: ${avg.toFixed(2)}</span>` : ''}`;
+            if (color) {
+                h.style.color           = color;
+                h.style.borderBottom    = `2px solid ${color}`;
+                h.style.backgroundColor = color + '18';
+            }
             grid.appendChild(h);
         });
 
@@ -795,10 +850,13 @@
         });
         grid.appendChild(timeCol);
 
-        // Day columns
-        const dayCols = days.map(() => {
+        // Day columns — subtle bg tint from avg stress
+        const dayCols = days.map((d, i) => {
+            const avg   = avgStress(allEvents[i]);
+            const color = stressColor(avg);
             const col = document.createElement('div');
             col.className = 'week-day-col';
+            if (color) col.style.backgroundColor = color + '08';
             HOURS.forEach(() => {
                 const line = document.createElement('div');
                 line.className = 'week-hour-line';
@@ -810,7 +868,6 @@
 
         wrap.appendChild(grid);
 
-        const allEvents = await Promise.all(days.map(d => fetchEvents(toDateString(d))));
         allEvents.forEach((events, i) => events.forEach(ev => placeEventBlock(ev, dayCols[i])));
     }
 
@@ -854,12 +911,29 @@
             const cell = document.createElement('div');
             cell.className = 'month-cell' + (otherMonth ? ' other-month' : '') + (isToday(date) ? ' today' : '');
 
+            const dayEvents = eventMap[toDateString(date)] || [];
+
+            // Color entire cell by avg stress
+            if (!otherMonth) {
+                const avg   = avgStress(dayEvents);
+                const color = stressColor(avg);
+                if (color) {
+                    cell.style.backgroundColor = color + '22';
+                    cell.style.borderColor     = color + '55';
+                }
+                if (avg !== null) cell.title = `Avg stress: ${avg.toFixed(2)}`;
+            }
+
             const numEl = document.createElement('div');
             numEl.className = 'month-day-num';
-            numEl.textContent = date.getDate();
+            if (!otherMonth && avgStress(dayEvents) !== null) {
+                const avg   = avgStress(dayEvents);
+                const color = stressColor(avg);
+                numEl.innerHTML = `<span>${date.getDate()}</span><span class="month-stress-label" style="color:${color}">Stress: ${avg.toFixed(2)}</span>`;
+            } else {
+                numEl.textContent = date.getDate();
+            }
             cell.appendChild(numEl);
-
-            const dayEvents = eventMap[toDateString(date)] || [];
             const maxShow = 3;
 
             dayEvents.slice(0, maxShow).forEach(ev => {
