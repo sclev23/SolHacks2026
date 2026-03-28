@@ -37,6 +37,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            flex-wrap: wrap;
         }
 
         header h1 {
@@ -51,6 +52,36 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 4px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .view-toggle button {
+            background: none;
+            border: none;
+            color: var(--muted);
+            padding: 5px 14px;
+            border-radius: 3px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .view-toggle button.active {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .view-toggle button:not(.active):hover {
+            color: var(--accent);
         }
 
         .date-nav {
@@ -76,7 +107,7 @@
         #currentDateLabel {
             font-size: 0.85rem;
             color: var(--muted);
-            min-width: 130px;
+            min-width: 160px;
             text-align: center;
         }
 
@@ -117,13 +148,14 @@
             height: calc(100vh - 69px);
         }
 
-        /* SCHEDULE */
+        /* SCHEDULE WRAP */
         .schedule-wrap {
             overflow-y: auto;
             border-right: 1px solid var(--border);
             position: relative;
         }
 
+        /* ── DAY VIEW ── */
         .schedule-grid {
             display: grid;
             grid-template-columns: 52px 1fr;
@@ -143,7 +175,6 @@
             padding: 6px 10px 0 0;
             font-size: 0.7rem;
             color: var(--muted);
-            position: relative;
         }
 
         .events-col {
@@ -165,7 +196,7 @@
             border-top: 1px dashed #1f1e1b;
         }
 
-        /* EVENT BLOCKS */
+        /* EVENT BLOCKS (day/week) */
         .event-block {
             position: absolute;
             left: 4px;
@@ -195,10 +226,10 @@
             font-size: 0.68rem;
         }
 
-        /* CURRENT TIME LINE */
+        /* NOW LINE */
         #nowLine {
             position: absolute;
-            left: 52px;
+            left: 0;
             right: 0;
             height: 2px;
             background: var(--accent);
@@ -217,6 +248,156 @@
             background: var(--accent);
         }
 
+        /* ── WEEK VIEW ── */
+        .week-grid {
+            display: grid;
+            grid-template-columns: 52px repeat(7, 1fr);
+            min-height: 100%;
+        }
+
+        .week-day-header {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-align: center;
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 5;
+        }
+
+        .week-day-header.today {
+            color: var(--accent);
+        }
+
+        .week-time-col {
+            border-right: 1px solid var(--border);
+        }
+
+        .week-time-col .time-label {
+            border-top: 1px solid var(--border);
+        }
+
+        .week-day-col {
+            position: relative;
+            border-right: 1px solid var(--border);
+        }
+
+        .week-hour-line {
+            height: var(--hour-h);
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+
+        .week-hour-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            border-top: 1px dashed #1f1e1b;
+        }
+
+        /* ── MONTH VIEW ── */
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: minmax(100px, 1fr);
+            min-height: 100%;
+        }
+
+        .month-dow-header {
+            font-size: 0.68rem;
+            color: var(--muted);
+            text-align: center;
+            padding: 10px 4px;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 5;
+        }
+
+        .month-cell {
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 6px;
+            cursor: pointer;
+            transition: background 0.12s;
+            overflow: hidden;
+        }
+
+        .month-cell:hover { background: var(--surface); }
+
+        .month-cell.other-month { opacity: 0.3; }
+
+        .month-cell.today .month-day-num {
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .month-day-num {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .month-event-pill {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            border-left: 2px solid;
+        }
+
+        .month-event-pill:hover { filter: brightness(1.2); }
+
+        .month-more {
+            font-size: 0.62rem;
+            color: var(--muted);
+            padding: 2px 0;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        .empty-state p:first-child {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: var(--border);
+        }
+
         /* SIDEBAR */
         .sidebar {
             display: flex;
@@ -233,7 +414,6 @@
             text-transform: uppercase;
         }
 
-        /* FORM */
         .event-form {
             padding: 20px 24px;
             display: flex;
@@ -320,27 +500,7 @@
             transition: background 0.15s;
         }
 
-        #deleteBtn:hover { background: rgba(201, 110, 110, 0.1); }
-
-        /* EMPTY STATE */
-        .empty-state {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.8rem;
-            pointer-events: none;
-        }
-
-        .empty-state p:first-child {
-            font-family: 'Fraunces', serif;
-            font-style: italic;
-            font-size: 1.1rem;
-            margin-bottom: 6px;
-            color: var(--border);
-        }
+        #deleteBtn:hover { background: rgba(201,110,110,0.1); }
     </style>
 </head>
 <body>
@@ -348,30 +508,28 @@
 <header>
     <h1>schedule</h1>
     <div class="header-controls">
+        <!-- View toggle -->
+        <div class="view-toggle">
+            <button id="btnDay"   onclick="setView('day')">day</button>
+            <button id="btnWeek"  onclick="setView('week')">week</button>
+            <button id="btnMonth" onclick="setView('month')">month</button>
+        </div>
+
+        <!-- Date navigation -->
         <div class="date-nav">
             <button onclick="changeDate(-1)">‹</button>
             <span id="currentDateLabel"></span>
             <button onclick="changeDate(1)">›</button>
         </div>
+
         <button class="btn-ghost" onclick="goToToday()">today</button>
         <button class="btn" onclick="newEvent()">+ new event</button>
     </div>
 </header>
 
 <main>
-    <!-- SCHEDULE GRID -->
-    <div class="schedule-wrap" id="scheduleWrap">
-        <div class="schedule-grid" id="scheduleGrid">
-            <div class="time-col" id="timeCol"></div>
-            <div class="events-col" id="eventsCol">
-                <div id="nowLine" style="display:none"></div>
-                <div class="empty-state" id="emptyState">
-                    <p>nothing scheduled</p>
-                    <span>add an event to get started</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- SCHEDULE AREA -->
+    <div class="schedule-wrap" id="scheduleWrap"></div>
 
     <!-- SIDEBAR FORM -->
     <aside class="sidebar">
@@ -424,227 +582,420 @@
 </main>
 
 <script>
-// ─── CONFIG ─────────────────────────────────────────────────────────────────
-const API = '/events';
-const HOURS = Array.from({length: 24}, (_, i) => i);
-const COLORS = ['#c9a96e','#6eb5c9','#6ec98a','#c96e6e','#a96ec9','#c9c26e','#6e8fc9'];
-let currentDate = new Date();
-let editingId = null;
-let selectedColor = COLORS[0];
+    // ─── CONFIG ──────────────────────────────────────────────────────────────────
+    const API    = '/events';
+    const HOURS  = Array.from({length: 24}, (_, i) => i);
+    const COLORS = ['#c9a96e','#6eb5c9','#6ec98a','#c96e6e','#a96ec9','#c9c26e','#6e8fc9'];
+    const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    buildGrid();
-    buildColorSwatches();
-    setFormDate(currentDate);
-    renderDateLabel();
-    loadEvents();
-    updateNowLine();
-    setInterval(updateNowLine, 60000);
-});
+    let currentDate   = new Date();
+    let currentView   = 'day';
+    let editingId     = null;
+    let selectedColor = COLORS[0];
 
-// ─── GRID ────────────────────────────────────────────────────────────────────
-function buildGrid() {
-    const timeCol = document.getElementById('timeCol');
-    const eventsCol = document.getElementById('eventsCol');
-
-    timeCol.innerHTML = '';
-    // Remove existing hour lines but keep nowLine and emptyState
-    eventsCol.querySelectorAll('.hour-line').forEach(el => el.remove());
-
-    HOURS.forEach(h => {
-        const label = document.createElement('div');
-        label.className = 'time-label';
-        label.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
-        timeCol.appendChild(label);
-
-        const line = document.createElement('div');
-        line.className = 'hour-line';
-        eventsCol.appendChild(line);
+    // ─── INIT ────────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        buildColorSwatches();
+        setFormDate(currentDate);
+        setView('day');
+        setInterval(updateNowLine, 60000);
     });
-}
 
-// ─── DATE ────────────────────────────────────────────────────────────────────
-function renderDateLabel() {
-    document.getElementById('currentDateLabel').textContent =
-        currentDate.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
-}
-
-function changeDate(delta) {
-    currentDate.setDate(currentDate.getDate() + delta);
-    renderDateLabel();
-    loadEvents();
-}
-
-function goToToday() {
-    currentDate = new Date();
-    renderDateLabel();
-    loadEvents();
-}
-
-function toDateString(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-// ─── EVENTS FROM API ─────────────────────────────────────────────────────────
-async function loadEvents() {
-    try {
-        const dateStr = toDateString(currentDate);
-        const res = await fetch(`${API}/date/${dateStr}`);
-        const events = await res.json();
-        renderEvents(events);
-    } catch (e) {
-        console.error('Could not load events:', e);
+    // ─── VIEW SWITCHER ────────────────────────────────────────────────────────────
+    function setView(view) {
+        currentView = view;
+        ['day','week','month'].forEach(v => {
+            document.getElementById(`btn${cap(v)}`).classList.toggle('active', v === view);
+        });
+        renderDateLabel();
+        if (view === 'day')   renderDayView();
+        if (view === 'week')  renderWeekView();
+        if (view === 'month') renderMonthView();
     }
-}
 
-function renderEvents(events) {
-    // Clear existing event blocks
-    document.querySelectorAll('.event-block').forEach(el => el.remove());
+    function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-    const emptyState = document.getElementById('emptyState');
-    emptyState.style.display = events.length === 0 ? 'block' : 'none';
+    // ─── DATE HELPERS ─────────────────────────────────────────────────────────────
+    function toDateString(d) {
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
 
-    events.forEach(ev => {
+    function isToday(d) { return toDateString(d) === toDateString(new Date()); }
+
+    function renderDateLabel() {
+        const el = document.getElementById('currentDateLabel');
+        if (currentView === 'day') {
+            el.textContent = currentDate.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+        } else if (currentView === 'week') {
+            const {start, end} = weekBounds(currentDate);
+            el.textContent = `${start.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+        } else {
+            el.textContent = currentDate.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+        }
+    }
+
+    function changeDate(delta) {
+        if (currentView === 'day') {
+            currentDate.setDate(currentDate.getDate() + delta);
+        } else if (currentView === 'week') {
+            currentDate.setDate(currentDate.getDate() + delta * 7);
+        } else {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+        }
+        setView(currentView);
+    }
+
+    function goToToday() {
+        currentDate = new Date();
+        setView(currentView);
+    }
+
+    function weekBounds(d) {
+        const start = new Date(d);
+        start.setDate(d.getDate() - d.getDay());
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        return {start, end};
+    }
+
+    // ─── API ──────────────────────────────────────────────────────────────────────
+    async function fetchEvents(dateStr) {
+        try {
+            const res = await fetch(`${API}/date/${dateStr}`);
+            return await res.json();
+        } catch { return []; }
+    }
+
+    // ─── DAY VIEW ─────────────────────────────────────────────────────────────────
+    function renderDayView() {
+        const wrap = document.getElementById('scheduleWrap');
+        wrap.innerHTML = `
+            <div class="schedule-grid" id="scheduleGrid">
+                <div class="time-col" id="timeCol"></div>
+                <div class="events-col" id="eventsCol">
+                    <div id="nowLine" style="display:none"></div>
+                    <div class="empty-state" id="emptyState">
+                        <p>nothing scheduled</p>
+                        <span>add an event to get started</span>
+                    </div>
+                </div>
+            </div>`;
+
+        buildDayGrid();
+        loadDayEvents();
+        updateNowLine();
+    }
+
+    function buildDayGrid() {
+        const timeCol  = document.getElementById('timeCol');
+        const eventsCol = document.getElementById('eventsCol');
+        timeCol.innerHTML = '';
+        eventsCol.querySelectorAll('.hour-line').forEach(el => el.remove());
+
+        HOURS.forEach(h => {
+            const label = document.createElement('div');
+            label.className = 'time-label';
+            label.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
+            timeCol.appendChild(label);
+
+            const line = document.createElement('div');
+            line.className = 'hour-line';
+            eventsCol.appendChild(line);
+        });
+    }
+
+    async function loadDayEvents() {
+        const events = await fetchEvents(toDateString(currentDate));
+        const emptyState = document.getElementById('emptyState');
+        document.querySelectorAll('.event-block').forEach(el => el.remove());
+        if (emptyState) emptyState.style.display = events.length === 0 ? 'block' : 'none';
+        const col = document.getElementById('eventsCol');
+        events.forEach(ev => placeEventBlock(ev, col));
+    }
+
+    function placeEventBlock(ev, col) {
         const block = document.createElement('div');
         block.className = 'event-block';
-        block.dataset.id = ev.id;
-
         const color = ev.color || COLORS[0];
-        const bg = color + '22';
-        block.style.background = bg;
+        block.style.background = color + '22';
         block.style.borderLeftColor = color;
         block.style.color = color;
 
         const [sh, sm] = ev.startTime.split(':').map(Number);
         const [eh, em] = ev.endTime.split(':').map(Number);
         const startMin = sh * 60 + sm;
-        const endMin = eh * 60 + em;
-        const top = (startMin / 60) * 60; // px per hour = 60
-        const height = Math.max(((endMin - startMin) / 60) * 60, 24);
-
-        block.style.top = `${top}px`;
-        block.style.height = `${height}px`;
+        const endMin   = eh * 60 + em;
+        block.style.top    = `${(startMin / 60) * 60}px`;
+        block.style.height = `${Math.max(((endMin - startMin) / 60) * 60, 24)}px`;
 
         block.innerHTML = `
             <div class="ev-title">${ev.title}</div>
-            <div class="ev-meta">${ev.startTime.slice(0,5)} – ${ev.endTime.slice(0,5)}${ev.location ? ' · ' + ev.location : ''}</div>
-        `;
+            <div class="ev-meta">${ev.startTime.slice(0,5)} – ${ev.endTime.slice(0,5)}${ev.location ? ' · ' + ev.location : ''}</div>`;
 
         block.addEventListener('click', () => openEditForm(ev));
-        document.getElementById('eventsCol').appendChild(block);
-    });
-}
-
-// ─── FORM ────────────────────────────────────────────────────────────────────
-function newEvent() {
-    editingId = null;
-    document.getElementById('eventId').value = '';
-    document.getElementById('fTitle').value = '';
-    document.getElementById('fLocation').value = '';
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fStart').value = '';
-    document.getElementById('fEnd').value = '';
-    setFormDate(currentDate);
-    selectColor(COLORS[0]);
-    document.getElementById('sidebarTitle').textContent = 'new event';
-    document.getElementById('deleteBtn').style.display = 'none';
-}
-
-function openEditForm(ev) {
-    editingId = ev.id;
-    document.getElementById('fTitle').value = ev.title || '';
-    document.getElementById('fDate').value = ev.date || '';
-    document.getElementById('fStart').value = ev.startTime ? ev.startTime.slice(0,5) : '';
-    document.getElementById('fEnd').value = ev.endTime ? ev.endTime.slice(0,5) : '';
-    document.getElementById('fLocation').value = ev.location || '';
-    document.getElementById('fDesc').value = ev.description || '';
-    selectColor(ev.color || COLORS[0]);
-    document.getElementById('sidebarTitle').textContent = 'edit event';
-    document.getElementById('deleteBtn').style.display = 'inline-block';
-}
-
-function setFormDate(d) {
-    document.getElementById('fDate').value = toDateString(d);
-}
-
-async function saveEvent() {
-    const payload = {
-        title: document.getElementById('fTitle').value.trim(),
-        date: document.getElementById('fDate').value,
-        startTime: document.getElementById('fStart').value,
-        endTime: document.getElementById('fEnd').value,
-        location: document.getElementById('fLocation').value.trim(),
-        description: document.getElementById('fDesc').value.trim(),
-        color: selectedColor
-    };
-
-    if (!payload.title || !payload.date || !payload.startTime || !payload.endTime) {
-        alert('Please fill in title, date, start and end time.');
-        return;
+        col.appendChild(block);
     }
 
-    try {
-        const url = editingId ? `${API}/${editingId}` : API;
-        const method = editingId ? 'PUT' : 'POST';
-        const res = await fetch(url, {
-            method,
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
+    function updateNowLine() {
+        const line = document.getElementById('nowLine');
+        if (!line) return;
+        const now = new Date();
+        if (!isToday(currentDate) || currentView !== 'day') { line.style.display = 'none'; return; }
+        const minutes = now.getHours() * 60 + now.getMinutes();
+        line.style.top = `${(minutes / 60) * 60}px`;
+        line.style.display = 'block';
+    }
+
+    // ─── WEEK VIEW ────────────────────────────────────────────────────────────────
+    async function renderWeekView() {
+        const {start} = weekBounds(currentDate);
+        const days = Array.from({length: 7}, (_, i) => {
+            const d = new Date(start);
+            d.setDate(start.getDate() + i);
+            return d;
         });
 
-        if (!res.ok) throw new Error('Save failed');
-        newEvent();
-        loadEvents();
-    } catch (e) {
-        alert('Could not save event. Is the backend running?');
-        console.error(e);
+        const wrap = document.getElementById('scheduleWrap');
+        wrap.innerHTML = '';
+
+        // Build grid shell
+        const grid = document.createElement('div');
+        grid.className = 'week-grid';
+
+        // Top-left corner spacer
+        const corner = document.createElement('div');
+        corner.style.cssText = 'border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:6;';
+        grid.appendChild(corner);
+
+        // Day headers
+        days.forEach(d => {
+            const h = document.createElement('div');
+            h.className = 'week-day-header' + (isToday(d) ? ' today' : '');
+            h.textContent = `${DAYS[d.getDay()]} ${d.getDate()}`;
+            grid.appendChild(h);
+        });
+
+        // Time column
+        const timeCol = document.createElement('div');
+        timeCol.className = 'week-time-col';
+        HOURS.forEach(h => {
+            const lbl = document.createElement('div');
+            lbl.className = 'time-label';
+            lbl.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
+            timeCol.appendChild(lbl);
+        });
+        grid.appendChild(timeCol);
+
+        // Day columns (placeholders, fill after fetch)
+        const dayCols = days.map(() => {
+            const col = document.createElement('div');
+            col.className = 'week-day-col';
+            HOURS.forEach(() => {
+                const line = document.createElement('div');
+                line.className = 'week-hour-line';
+                col.appendChild(line);
+            });
+            grid.appendChild(col);
+            return col;
+        });
+
+        wrap.appendChild(grid);
+
+        // Fetch & place events
+        const allEvents = await Promise.all(days.map(d => fetchEvents(toDateString(d))));
+        allEvents.forEach((events, i) => {
+            events.forEach(ev => placeEventBlock(ev, dayCols[i]));
+        });
     }
-}
 
-async function deleteEvent() {
-    if (!editingId) return;
-    if (!confirm('Delete this event?')) return;
-    try {
-        await fetch(`${API}/${editingId}`, {method: 'DELETE'});
-        newEvent();
-        loadEvents();
-    } catch (e) {
-        alert('Could not delete event.');
+    // ─── MONTH VIEW ───────────────────────────────────────────────────────────────
+    async function renderMonthView() {
+        const wrap = document.getElementById('scheduleWrap');
+        wrap.innerHTML = '';
+
+        const year  = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const firstDow    = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const daysInPrev  = new Date(year, month, 0).getDate();
+
+        const grid = document.createElement('div');
+        grid.className = 'month-grid';
+
+        // Day-of-week headers
+        DAYS.forEach(d => {
+            const h = document.createElement('div');
+            h.className = 'month-dow-header';
+            h.textContent = d;
+            grid.appendChild(h);
+        });
+
+        // Collect all dates to show (prev overflow + current + next overflow)
+        const cells = [];
+
+        // Prev month overflow
+        for (let i = firstDow - 1; i >= 0; i--) {
+            cells.push({date: new Date(year, month - 1, daysInPrev - i), otherMonth: true});
+        }
+        // Current month
+        for (let d = 1; d <= daysInMonth; d++) {
+            cells.push({date: new Date(year, month, d), otherMonth: false});
+        }
+        // Next month overflow to fill last row
+        const remaining = 7 - (cells.length % 7);
+        if (remaining < 7) {
+            for (let d = 1; d <= remaining; d++) {
+                cells.push({date: new Date(year, month + 1, d), otherMonth: true});
+            }
+        }
+
+        // Fetch events for all visible dates in parallel
+        const dateStrings = cells.map(c => toDateString(c.date));
+        const uniqueDates = [...new Set(dateStrings)];
+        const eventMap = {};
+        await Promise.all(uniqueDates.map(async ds => {
+            eventMap[ds] = await fetchEvents(ds);
+        }));
+
+        // Render cells
+        cells.forEach(({date, otherMonth}) => {
+            const cell = document.createElement('div');
+            cell.className = 'month-cell' + (otherMonth ? ' other-month' : '') + (isToday(date) ? ' today' : '');
+
+            const numEl = document.createElement('div');
+            numEl.className = 'month-day-num';
+            numEl.textContent = date.getDate();
+            cell.appendChild(numEl);
+
+            const ds = toDateString(date);
+            const dayEvents = eventMap[ds] || [];
+            const maxShow = 3;
+
+            dayEvents.slice(0, maxShow).forEach(ev => {
+                const pill = document.createElement('div');
+                pill.className = 'month-event-pill';
+                const color = ev.color || COLORS[0];
+                pill.style.background = color + '22';
+                pill.style.borderLeftColor = color;
+                pill.style.color = color;
+                pill.textContent = ev.title;
+                pill.addEventListener('click', e => { e.stopPropagation(); openEditForm(ev); });
+                cell.appendChild(pill);
+            });
+
+            if (dayEvents.length > maxShow) {
+                const more = document.createElement('div');
+                more.className = 'month-more';
+                more.textContent = `+${dayEvents.length - maxShow} more`;
+                cell.appendChild(more);
+            }
+
+            // Click cell → jump to day view
+            cell.addEventListener('click', () => {
+                currentDate = new Date(date);
+                setView('day');
+            });
+
+            grid.appendChild(cell);
+        });
+
+        wrap.appendChild(grid);
     }
-}
 
-// ─── COLOR SWATCHES ──────────────────────────────────────────────────────────
-function buildColorSwatches() {
-    const row = document.getElementById('colorRow');
-    COLORS.forEach(c => {
-        const s = document.createElement('div');
-        s.className = 'color-swatch';
-        s.style.background = c;
-        s.dataset.color = c;
-        s.addEventListener('click', () => selectColor(c));
-        row.appendChild(s);
-    });
-    selectColor(COLORS[0]);
-}
+    // ─── FORM ─────────────────────────────────────────────────────────────────────
+    function newEvent() {
+        editingId = null;
+        document.getElementById('fTitle').value    = '';
+        document.getElementById('fLocation').value = '';
+        document.getElementById('fDesc').value     = '';
+        document.getElementById('fStart').value    = '';
+        document.getElementById('fEnd').value      = '';
+        setFormDate(currentDate);
+        selectColor(COLORS[0]);
+        document.getElementById('sidebarTitle').textContent   = 'new event';
+        document.getElementById('deleteBtn').style.display    = 'none';
+    }
 
-function selectColor(color) {
-    selectedColor = color;
-    document.querySelectorAll('.color-swatch').forEach(s => {
-        s.classList.toggle('selected', s.dataset.color === color);
-    });
-}
+    function openEditForm(ev) {
+        editingId = ev.id;
+        document.getElementById('fTitle').value    = ev.title        || '';
+        document.getElementById('fDate').value     = ev.date         || '';
+        document.getElementById('fStart').value    = ev.startTime ? ev.startTime.slice(0,5) : '';
+        document.getElementById('fEnd').value      = ev.endTime   ? ev.endTime.slice(0,5)   : '';
+        document.getElementById('fLocation').value = ev.location     || '';
+        document.getElementById('fDesc').value     = ev.description  || '';
+        selectColor(ev.color || COLORS[0]);
+        document.getElementById('sidebarTitle').textContent   = 'edit event';
+        document.getElementById('deleteBtn').style.display    = 'inline-block';
+    }
 
-// ─── NOW LINE ────────────────────────────────────────────────────────────────
-function updateNowLine() {
-    const line = document.getElementById('nowLine');
-    const now = new Date();
-    const isToday = toDateString(now) === toDateString(currentDate);
-    if (!isToday) { line.style.display = 'none'; return; }
-    const minutes = now.getHours() * 60 + now.getMinutes();
-    line.style.top = `${(minutes / 60) * 60}px`;
-    line.style.display = 'block';
-}
+    function setFormDate(d) {
+        document.getElementById('fDate').value = toDateString(d);
+    }
+
+    async function saveEvent() {
+        const payload = {
+            title:       document.getElementById('fTitle').value.trim(),
+            date:        document.getElementById('fDate').value,
+            startTime:   document.getElementById('fStart').value,
+            endTime:     document.getElementById('fEnd').value,
+            location:    document.getElementById('fLocation').value.trim(),
+            description: document.getElementById('fDesc').value.trim(),
+            color:       selectedColor
+        };
+
+        if (!payload.title || !payload.date || !payload.startTime || !payload.endTime) {
+            alert('Please fill in title, date, start and end time.');
+            return;
+        }
+
+        try {
+            const url    = editingId ? `${API}/${editingId}` : API;
+            const method = editingId ? 'PUT' : 'POST';
+            const res = await fetch(url, {
+                method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Save failed');
+            newEvent();
+            setView(currentView);
+        } catch (e) {
+            alert('Could not save event. Is the backend running?');
+            console.error(e);
+        }
+    }
+
+    async function deleteEvent() {
+        if (!editingId) return;
+        if (!confirm('Delete this event?')) return;
+        try {
+            await fetch(`${API}/${editingId}`, {method: 'DELETE'});
+            newEvent();
+            setView(currentView);
+        } catch { alert('Could not delete event.'); }
+    }
+
+    // ─── COLOR SWATCHES ───────────────────────────────────────────────────────────
+    function buildColorSwatches() {
+        const row = document.getElementById('colorRow');
+        COLORS.forEach(c => {
+            const s = document.createElement('div');
+            s.className = 'color-swatch';
+            s.style.background = c;
+            s.dataset.color = c;
+            s.addEventListener('click', () => selectColor(c));
+            row.appendChild(s);
+        });
+        selectColor(COLORS[0]);
+    }
+
+    function selectColor(color) {
+        selectedColor = color;
+        document.querySelectorAll('.color-swatch').forEach(s => {
+            s.classList.toggle('selected', s.dataset.color === color);
+        });
+    }
 </script>
 </body>
 </html>
