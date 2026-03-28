@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f0e0c;
+            --surface: #1a1916;
+            --border: #2e2c28;
+            --text: #e8e4dc;
+            --muted: #6b6760;
+            --accent: #c9a96e;
+            --accent-dim: #7a6340;
+            --danger: #c96e6e;
+            --hour-h: 60px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        header h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: 1.6rem;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-nav button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+        .date-nav button:hover { border-color: var(--accent); color: var(--accent); }
+
+        #currentDateLabel {
+            font-size: 0.85rem;
+            color: var(--muted);
+            min-width: 130px;
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: opacity 0.15s;
+            font-weight: 500;
+        }
+
+        .btn:hover { opacity: 0.85; }
+
+        .btn-ghost {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s;
+        }
+
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* MAIN LAYOUT */
+        main {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            overflow: hidden;
+            height: calc(100vh - 69px);
+        }
+
+        /* SCHEDULE */
+        .schedule-wrap {
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+            position: relative;
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: 52px 1fr;
+            min-height: 100%;
+        }
+
+        .time-col {
+            border-right: 1px solid var(--border);
+            position: relative;
+        }
+
+        .time-label {
+            height: var(--hour-h);
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding: 6px 10px 0 0;
+            font-size: 0.7rem;
+            color: var(--muted);
+            position: relative;
+        }
+
+        .events-col {
+            position: relative;
+        }
+
+        .hour-line {
+            height: var(--hour-h);
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+
+        .hour-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            border-top: 1px dashed #1f1e1b;
+        }
+
+        /* EVENT BLOCKS */
+        .event-block {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            overflow: hidden;
+            cursor: pointer;
+            border-left: 3px solid;
+            transition: filter 0.15s, transform 0.1s;
+            z-index: 1;
+        }
+
+        .event-block:hover { filter: brightness(1.15); transform: translateX(1px); }
+
+        .event-block .ev-title {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+
+        .event-block .ev-meta {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.68rem;
+        }
+
+        /* CURRENT TIME LINE */
+        #nowLine {
+            position: absolute;
+            left: 52px;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #nowLine::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* FORM */
+        .event-form {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.82rem;
+            padding: 8px 12px;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus { border-color: var(--accent); }
+
+        .form-group textarea { resize: vertical; min-height: 70px; }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.15s, transform 0.1s;
+        }
+
+        .color-swatch:hover { transform: scale(1.15); }
+        .color-swatch.selected { border-color: var(--text); }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 4px;
+        }
+
+        .form-actions .btn { flex: 1; }
+
+        #deleteBtn {
+            background: none;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #deleteBtn:hover { background: rgba(201, 110, 110, 0.1); }
+
+        /* EMPTY STATE */
+        .empty-state {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        .empty-state p:first-child {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>schedule</h1>
+    <div class="header-controls">
+        <div class="date-nav">
+            <button onclick="changeDate(-1)">‹</button>
+            <span id="currentDateLabel"></span>
+            <button onclick="changeDate(1)">›</button>
+        </div>
+        <button class="btn-ghost" onclick="goToToday()">today</button>
+        <button class="btn" onclick="newEvent()">+ new event</button>
+    </div>
+</header>
+
+<main>
+    <!-- SCHEDULE GRID -->
+    <div class="schedule-wrap" id="scheduleWrap">
+        <div class="schedule-grid" id="scheduleGrid">
+            <div class="time-col" id="timeCol"></div>
+            <div class="events-col" id="eventsCol">
+                <div id="nowLine" style="display:none"></div>
+                <div class="empty-state" id="emptyState">
+                    <p>nothing scheduled</p>
+                    <span>add an event to get started</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR FORM -->
+    <aside class="sidebar">
+        <div class="sidebar-header" id="sidebarTitle">new event</div>
+        <div class="event-form">
+            <input type="hidden" id="eventId">
+
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="fTitle" placeholder="e.g. Team standup">
+            </div>
+
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="fDate">
+            </div>
+
+            <div class="time-row">
+                <div class="form-group">
+                    <label>Start</label>
+                    <input type="time" id="fStart">
+                </div>
+                <div class="form-group">
+                    <label>End</label>
+                    <input type="time" id="fEnd">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="fLocation" placeholder="e.g. Room 204">
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="fDesc" placeholder="Optional notes..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-row" id="colorRow"></div>
+            </div>
+
+            <div class="form-actions">
+                <button id="deleteBtn" style="display:none" onclick="deleteEvent()">delete</button>
+                <button class="btn" onclick="saveEvent()">save event</button>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+const API = '/events';
+const HOURS = Array.from({length: 24}, (_, i) => i);
+const COLORS = ['#c9a96e','#6eb5c9','#6ec98a','#c96e6e','#a96ec9','#c9c26e','#6e8fc9'];
+let currentDate = new Date();
+let editingId = null;
+let selectedColor = COLORS[0];
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    buildGrid();
+    buildColorSwatches();
+    setFormDate(currentDate);
+    renderDateLabel();
+    loadEvents();
+    updateNowLine();
+    setInterval(updateNowLine, 60000);
+});
+
+// ─── GRID ────────────────────────────────────────────────────────────────────
+function buildGrid() {
+    const timeCol = document.getElementById('timeCol');
+    const eventsCol = document.getElementById('eventsCol');
+
+    timeCol.innerHTML = '';
+    // Remove existing hour lines but keep nowLine and emptyState
+    eventsCol.querySelectorAll('.hour-line').forEach(el => el.remove());
+
+    HOURS.forEach(h => {
+        const label = document.createElement('div');
+        label.className = 'time-label';
+        label.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
+        timeCol.appendChild(label);
+
+        const line = document.createElement('div');
+        line.className = 'hour-line';
+        eventsCol.appendChild(line);
+    });
+}
+
+// ─── DATE ────────────────────────────────────────────────────────────────────
+function renderDateLabel() {
+    document.getElementById('currentDateLabel').textContent =
+        currentDate.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+}
+
+function changeDate(delta) {
+    currentDate.setDate(currentDate.getDate() + delta);
+    renderDateLabel();
+    loadEvents();
+}
+
+function goToToday() {
+    currentDate = new Date();
+    renderDateLabel();
+    loadEvents();
+}
+
+function toDateString(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ─── EVENTS FROM API ─────────────────────────────────────────────────────────
+async function loadEvents() {
+    try {
+        const dateStr = toDateString(currentDate);
+        const res = await fetch(`${API}/date/${dateStr}`);
+        const events = await res.json();
+        renderEvents(events);
+    } catch (e) {
+        console.error('Could not load events:', e);
+    }
+}
+
+function renderEvents(events) {
+    // Clear existing event blocks
+    document.querySelectorAll('.event-block').forEach(el => el.remove());
+
+    const emptyState = document.getElementById('emptyState');
+    emptyState.style.display = events.length === 0 ? 'block' : 'none';
+
+    events.forEach(ev => {
+        const block = document.createElement('div');
+        block.className = 'event-block';
+        block.dataset.id = ev.id;
+
+        const color = ev.color || COLORS[0];
+        const bg = color + '22';
+        block.style.background = bg;
+        block.style.borderLeftColor = color;
+        block.style.color = color;
+
+        const [sh, sm] = ev.startTime.split(':').map(Number);
+        const [eh, em] = ev.endTime.split(':').map(Number);
+        const startMin = sh * 60 + sm;
+        const endMin = eh * 60 + em;
+        const top = (startMin / 60) * 60; // px per hour = 60
+        const height = Math.max(((endMin - startMin) / 60) * 60, 24);
+
+        block.style.top = `${top}px`;
+        block.style.height = `${height}px`;
+
+        block.innerHTML = `
+            <div class="ev-title">${ev.title}</div>
+            <div class="ev-meta">${ev.startTime.slice(0,5)} – ${ev.endTime.slice(0,5)}${ev.location ? ' · ' + ev.location : ''}</div>
+        `;
+
+        block.addEventListener('click', () => openEditForm(ev));
+        document.getElementById('eventsCol').appendChild(block);
+    });
+}
+
+// ─── FORM ────────────────────────────────────────────────────────────────────
+function newEvent() {
+    editingId = null;
+    document.getElementById('eventId').value = '';
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fLocation').value = '';
+    document.getElementById('fDesc').value = '';
+    document.getElementById('fStart').value = '';
+    document.getElementById('fEnd').value = '';
+    setFormDate(currentDate);
+    selectColor(COLORS[0]);
+    document.getElementById('sidebarTitle').textContent = 'new event';
+    document.getElementById('deleteBtn').style.display = 'none';
+}
+
+function openEditForm(ev) {
+    editingId = ev.id;
+    document.getElementById('fTitle').value = ev.title || '';
+    document.getElementById('fDate').value = ev.date || '';
+    document.getElementById('fStart').value = ev.startTime ? ev.startTime.slice(0,5) : '';
+    document.getElementById('fEnd').value = ev.endTime ? ev.endTime.slice(0,5) : '';
+    document.getElementById('fLocation').value = ev.location || '';
+    document.getElementById('fDesc').value = ev.description || '';
+    selectColor(ev.color || COLORS[0]);
+    document.getElementById('sidebarTitle').textContent = 'edit event';
+    document.getElementById('deleteBtn').style.display = 'inline-block';
+}
+
+function setFormDate(d) {
+    document.getElementById('fDate').value = toDateString(d);
+}
+
+async function saveEvent() {
+    const payload = {
+        title: document.getElementById('fTitle').value.trim(),
+        date: document.getElementById('fDate').value,
+        startTime: document.getElementById('fStart').value,
+        endTime: document.getElementById('fEnd').value,
+        location: document.getElementById('fLocation').value.trim(),
+        description: document.getElementById('fDesc').value.trim(),
+        color: selectedColor
+    };
+
+    if (!payload.title || !payload.date || !payload.startTime || !payload.endTime) {
+        alert('Please fill in title, date, start and end time.');
+        return;
+    }
+
+    try {
+        const url = editingId ? `${API}/${editingId}` : API;
+        const method = editingId ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+            method,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('Save failed');
+        newEvent();
+        loadEvents();
+    } catch (e) {
+        alert('Could not save event. Is the backend running?');
+        console.error(e);
+    }
+}
+
+async function deleteEvent() {
+    if (!editingId) return;
+    if (!confirm('Delete this event?')) return;
+    try {
+        await fetch(`${API}/${editingId}`, {method: 'DELETE'});
+        newEvent();
+        loadEvents();
+    } catch (e) {
+        alert('Could not delete event.');
+    }
+}
+
+// ─── COLOR SWATCHES ──────────────────────────────────────────────────────────
+function buildColorSwatches() {
+    const row = document.getElementById('colorRow');
+    COLORS.forEach(c => {
+        const s = document.createElement('div');
+        s.className = 'color-swatch';
+        s.style.background = c;
+        s.dataset.color = c;
+        s.addEventListener('click', () => selectColor(c));
+        row.appendChild(s);
+    });
+    selectColor(COLORS[0]);
+}
+
+function selectColor(color) {
+    selectedColor = color;
+    document.querySelectorAll('.color-swatch').forEach(s => {
+        s.classList.toggle('selected', s.dataset.color === color);
+    });
+}
+
+// ─── NOW LINE ────────────────────────────────────────────────────────────────
+function updateNowLine() {
+    const line = document.getElementById('nowLine');
+    const now = new Date();
+    const isToday = toDateString(now) === toDateString(currentDate);
+    if (!isToday) { line.style.display = 'none'; return; }
+    const minutes = now.getHours() * 60 + now.getMinutes();
+    line.style.top = `${(minutes / 60) * 60}px`;
+    line.style.display = 'block';
+}
+</script>
+</body>
+</html>
