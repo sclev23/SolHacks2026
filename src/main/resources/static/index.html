@@ -684,7 +684,9 @@
             const res = await fetch(`${API}/date/${dateStr}`, {
                 credentials: 'include'
             });
-            return await res.json();
+            if (!res.ok) return [];
+            const data = await res.json();
+            return Array.isArray(data) ? data : [];
         } catch { return []; }
     }
 

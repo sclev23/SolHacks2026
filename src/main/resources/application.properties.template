@@ -1,6 +1,6 @@
 server.port=8080
 
-spring.datasource.url=jdbc:postgresql://YOUR_SUPABASE_URL:6543/postgres
+spring.datasource.url=jdbc:postgresql://YOUR_SUPABASE_URL:6543/postgres?prepareThreshold=0
 spring.datasource.username=YOUR_USERNAME
 spring.datasource.password=YOUR_PASSWORD
 
