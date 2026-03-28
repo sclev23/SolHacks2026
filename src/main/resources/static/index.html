@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Builder</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Playfair+Display:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,7 +23,7 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'DM Mono', monospace;
+            font-family: 'Roboto', monospace;
             min-height: 100vh;
             display: grid;
             grid-template-rows: auto 1fr;
@@ -40,7 +40,7 @@
         }
 
         header h1 {
-            font-family: 'Fraunces', serif;
+            font-family: 'Playfair Display', serif;
             font-weight: 300;
             font-size: 1.6rem;
             letter-spacing: -0.02em;
@@ -86,7 +86,7 @@
             border: none;
             padding: 8px 18px;
             border-radius: 4px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'Roboto', monospace;
             font-size: 0.8rem;
             cursor: pointer;
             transition: opacity 0.15s;
@@ -101,7 +101,7 @@
             color: var(--muted);
             padding: 8px 18px;
             border-radius: 4px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'Roboto Light', monospace;
             font-size: 0.8rem;
             cursor: pointer;
             transition: border-color 0.15s, color 0.15s;
@@ -263,7 +263,7 @@
             border: 1px solid var(--border);
             border-radius: 4px;
             color: var(--text);
-            font-family: 'DM Mono', monospace;
+            font-family: 'Roboto', monospace;
             font-size: 0.82rem;
             padding: 8px 12px;
             width: 100%;
@@ -314,7 +314,7 @@
             color: var(--danger);
             padding: 8px 14px;
             border-radius: 4px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'Roboto', monospace;
             font-size: 0.8rem;
             cursor: pointer;
             transition: background 0.15s;
@@ -335,7 +335,7 @@
         }
 
         .empty-state p:first-child {
-            font-family: 'Fraunces', serif;
+            font-family: 'Playfair Display', serif;
             font-style: italic;
             font-size: 1.1rem;
             margin-bottom: 6px;
@@ -346,15 +346,15 @@
 <body>
 
 <header>
-    <h1>schedule</h1>
+    <h1>Schedule</h1>
     <div class="header-controls">
         <div class="date-nav">
             <button onclick="changeDate(-1)">‹</button>
             <span id="currentDateLabel"></span>
             <button onclick="changeDate(1)">›</button>
         </div>
-        <button class="btn-ghost" onclick="goToToday()">today</button>
-        <button class="btn" onclick="newEvent()">+ new event</button>
+        <button class="btn-ghost" onclick="goToToday()">Today</button>
+        <button class="btn" onclick="newEvent()">+ New Event</button>
     </div>
 </header>
 
@@ -416,14 +416,22 @@
             </div>
 
             <div class="form-actions">
-                <button id="deleteBtn" style="display:none" onclick="deleteEvent()">delete</button>
-                <button class="btn" onclick="saveEvent()">save event</button>
+                <button id="deleteBtn" style="display:none" onclick="deleteEvent()">Delete</button>
+                <button class="btn" onclick="saveEvent()">Save Event</button>
             </div>
         </div>
     </aside>
 </main>
 
 <script>
+// ─── HELPER ─────────────────────────────────────────────────────────────────
+function to12hr(time) {
+    const [h, m] = time.split(':').map(Number);
+    const ampm = h < 12 ? 'AM' : 'PM';
+    const hour = h % 12 || 12;
+    return `${hour}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
 // ─── CONFIG ─────────────────────────────────────────────────────────────────
 const API = '/events';
 const HOURS = Array.from({length: 24}, (_, i) => i);
@@ -455,7 +463,11 @@ function buildGrid() {
     HOURS.forEach(h => {
         const label = document.createElement('div');
         label.className = 'time-label';
-        label.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
+        label.textContent = h === 0 ? '' : (() => {
+            const hour = h % 12 || 12;
+            const ampm = h < 12 ? 'AM' : 'PM';
+            return `${hour} ${ampm}`;
+        })();
         timeCol.appendChild(label);
 
         const line = document.createElement('div');
@@ -528,7 +540,7 @@ function renderEvents(events) {
 
         block.innerHTML = `
             <div class="ev-title">${ev.title}</div>
-            <div class="ev-meta">${ev.startTime.slice(0,5)} – ${ev.endTime.slice(0,5)}${ev.location ? ' · ' + ev.location : ''}</div>
+            <div class="ev-meta">${to12hr(ev.startTime)} – ${to12hr(ev.endTime)}${ev.location ? ' · ' + ev.location : ''}</div>
         `;
 
         block.addEventListener('click', () => openEditForm(ev));
