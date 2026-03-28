@@ -29,7 +29,6 @@
             grid-template-rows: auto 1fr;
         }
 
-        /* HEADER */
         header {
             border-bottom: 1px solid var(--border);
             padding: 20px 32px;
@@ -47,30 +46,20 @@
             color: var(--accent);
         }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
 
-        .date-nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .date-nav { display: flex; align-items: center; gap: 8px; }
 
         .date-nav button {
             background: none;
             border: 1px solid var(--border);
             color: var(--text);
-            width: 32px;
-            height: 32px;
+            width: 32px; height: 32px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
             transition: border-color 0.15s, color 0.15s;
         }
-
         .date-nav button:hover { border-color: var(--accent); color: var(--accent); }
 
         #currentDateLabel {
@@ -92,7 +81,6 @@
             transition: opacity 0.15s;
             font-weight: 500;
         }
-
         .btn:hover { opacity: 0.85; }
 
         .btn-ghost {
@@ -106,10 +94,8 @@
             cursor: pointer;
             transition: border-color 0.15s, color 0.15s;
         }
-
         .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* MAIN LAYOUT */
         main {
             display: grid;
             grid-template-columns: 1fr 320px;
@@ -117,7 +103,6 @@
             height: calc(100vh - 69px);
         }
 
-        /* SCHEDULE */
         .schedule-wrap {
             overflow-y: auto;
             border-right: 1px solid var(--border);
@@ -130,10 +115,7 @@
             min-height: 100%;
         }
 
-        .time-col {
-            border-right: 1px solid var(--border);
-            position: relative;
-        }
+        .time-col { border-right: 1px solid var(--border); position: relative; }
 
         .time-label {
             height: var(--hour-h);
@@ -143,33 +125,25 @@
             padding: 6px 10px 0 0;
             font-size: 0.7rem;
             color: var(--muted);
-            position: relative;
         }
 
-        .events-col {
-            position: relative;
-        }
+        .events-col { position: relative; }
 
         .hour-line {
             height: var(--hour-h);
             border-top: 1px solid var(--border);
             position: relative;
         }
-
         .hour-line::after {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
+            top: 50%; left: 0; right: 0;
             border-top: 1px dashed #1f1e1b;
         }
 
-        /* EVENT BLOCKS */
         .event-block {
             position: absolute;
-            left: 4px;
-            right: 4px;
+            left: 4px; right: 4px;
             border-radius: 4px;
             padding: 6px 10px;
             font-size: 0.75rem;
@@ -179,7 +153,6 @@
             transition: filter 0.15s, transform 0.1s;
             z-index: 1;
         }
-
         .event-block:hover { filter: brightness(1.15); transform: translateX(1px); }
 
         .event-block .ev-title {
@@ -189,40 +162,26 @@
             text-overflow: ellipsis;
             margin-bottom: 2px;
         }
+        .event-block .ev-meta { color: rgba(255,255,255,0.6); font-size: 0.68rem; }
 
-        .event-block .ev-meta {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.68rem;
-        }
-
-        /* CURRENT TIME LINE */
         #nowLine {
             position: absolute;
-            left: 52px;
-            right: 0;
+            left: 52px; right: 0;
             height: 2px;
             background: var(--accent);
             z-index: 10;
             pointer-events: none;
         }
-
         #nowLine::before {
             content: '';
             position: absolute;
-            left: -4px;
-            top: -4px;
-            width: 10px;
-            height: 10px;
+            left: -4px; top: -4px;
+            width: 10px; height: 10px;
             border-radius: 50%;
             background: var(--accent);
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        .sidebar { display: flex; flex-direction: column; overflow: hidden; }
 
         .sidebar-header {
             padding: 20px 24px 16px;
@@ -233,7 +192,6 @@
             text-transform: uppercase;
         }
 
-        /* FORM */
         .event-form {
             padding: 20px 24px;
             display: flex;
@@ -243,11 +201,7 @@
             flex: 1;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
 
         .form-group label {
             font-size: 0.7rem;
@@ -257,8 +211,7 @@
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group textarea {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 4px;
@@ -270,42 +223,38 @@
             outline: none;
             transition: border-color 0.15s;
         }
-
         .form-group input:focus,
         .form-group textarea:focus { border-color: var(--accent); }
-
         .form-group textarea { resize: vertical; min-height: 70px; }
 
-        .time-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+        .time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .color-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        /* STRESS BUBBLES */
+        .stress-row { display: flex; gap: 8px; }
 
-        .color-swatch {
-            width: 24px;
-            height: 24px;
+        .stress-bubble {
+            width: 32px; height: 32px;
             border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.78rem;
             cursor: pointer;
-            border: 2px solid transparent;
-            transition: border-color 0.15s, transform 0.1s;
-        }
-
-        .color-swatch:hover { transform: scale(1.15); }
-        .color-swatch.selected { border-color: var(--text); }
-
-        .form-actions {
             display: flex;
-            gap: 8px;
-            padding-top: 4px;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
         }
+        .stress-bubble:hover { transform: scale(1.1); border-color: var(--muted); }
 
+        .stress-bubble.selected[data-level="1"] { background: #4caf7d; border-color: #4caf7d; color: var(--bg); }
+        .stress-bubble.selected[data-level="2"] { background: #8fbc4f; border-color: #8fbc4f; color: var(--bg); }
+        .stress-bubble.selected[data-level="3"] { background: #c9c26e; border-color: #c9c26e; color: var(--bg); }
+        .stress-bubble.selected[data-level="4"] { background: #c98f4f; border-color: #c98f4f; color: var(--bg); }
+        .stress-bubble.selected[data-level="5"] { background: #c96e6e; border-color: #c96e6e; color: var(--bg); }
+
+        .form-actions { display: flex; gap: 8px; padding-top: 4px; }
         .form-actions .btn { flex: 1; }
 
         #deleteBtn {
@@ -319,21 +268,17 @@
             cursor: pointer;
             transition: background 0.15s;
         }
-
         #deleteBtn:hover { background: rgba(201, 110, 110, 0.1); }
 
-        /* EMPTY STATE */
         .empty-state {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
             color: var(--muted);
             font-size: 0.8rem;
             pointer-events: none;
         }
-
         .empty-state p:first-child {
             font-family: 'Fraunces', serif;
             font-style: italic;
@@ -359,7 +304,6 @@
 </header>
 
 <main>
-    <!-- SCHEDULE GRID -->
     <div class="schedule-wrap" id="scheduleWrap">
         <div class="schedule-grid" id="scheduleGrid">
             <div class="time-col" id="timeCol"></div>
@@ -373,7 +317,6 @@
         </div>
     </div>
 
-    <!-- SIDEBAR FORM -->
     <aside class="sidebar">
         <div class="sidebar-header" id="sidebarTitle">new event</div>
         <div class="event-form">
@@ -411,8 +354,8 @@
             </div>
 
             <div class="form-group">
-                <label>Color</label>
-                <div class="color-row" id="colorRow"></div>
+                <label>Stress Level</label>
+                <div class="stress-row" id="fStress"></div>
             </div>
 
             <div class="form-actions">
@@ -424,227 +367,227 @@
 </main>
 
 <script>
-// ─── CONFIG ─────────────────────────────────────────────────────────────────
-const API = '/events';
-const HOURS = Array.from({length: 24}, (_, i) => i);
-const COLORS = ['#c9a96e','#6eb5c9','#6ec98a','#c96e6e','#a96ec9','#c9c26e','#6e8fc9'];
-let currentDate = new Date();
-let editingId = null;
-let selectedColor = COLORS[0];
+    // ─── CONFIG ──────────────────────────────────────────────────────────────────
+    const API = '/events';
+    const HOURS = Array.from({length: 24}, (_, i) => i);
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    buildGrid();
-    buildColorSwatches();
-    setFormDate(currentDate);
-    renderDateLabel();
-    loadEvents();
-    updateNowLine();
-    setInterval(updateNowLine, 60000);
-});
-
-// ─── GRID ────────────────────────────────────────────────────────────────────
-function buildGrid() {
-    const timeCol = document.getElementById('timeCol');
-    const eventsCol = document.getElementById('eventsCol');
-
-    timeCol.innerHTML = '';
-    // Remove existing hour lines but keep nowLine and emptyState
-    eventsCol.querySelectorAll('.hour-line').forEach(el => el.remove());
-
-    HOURS.forEach(h => {
-        const label = document.createElement('div');
-        label.className = 'time-label';
-        label.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
-        timeCol.appendChild(label);
-
-        const line = document.createElement('div');
-        line.className = 'hour-line';
-        eventsCol.appendChild(line);
-    });
-}
-
-// ─── DATE ────────────────────────────────────────────────────────────────────
-function renderDateLabel() {
-    document.getElementById('currentDateLabel').textContent =
-        currentDate.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
-}
-
-function changeDate(delta) {
-    currentDate.setDate(currentDate.getDate() + delta);
-    renderDateLabel();
-    loadEvents();
-}
-
-function goToToday() {
-    currentDate = new Date();
-    renderDateLabel();
-    loadEvents();
-}
-
-function toDateString(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-// ─── EVENTS FROM API ─────────────────────────────────────────────────────────
-async function loadEvents() {
-    try {
-        const dateStr = toDateString(currentDate);
-        const res = await fetch(`${API}/date/${dateStr}`);
-        const events = await res.json();
-        renderEvents(events);
-    } catch (e) {
-        console.error('Could not load events:', e);
-    }
-}
-
-function renderEvents(events) {
-    // Clear existing event blocks
-    document.querySelectorAll('.event-block').forEach(el => el.remove());
-
-    const emptyState = document.getElementById('emptyState');
-    emptyState.style.display = events.length === 0 ? 'block' : 'none';
-
-    events.forEach(ev => {
-        const block = document.createElement('div');
-        block.className = 'event-block';
-        block.dataset.id = ev.id;
-
-        const color = ev.color || COLORS[0];
-        const bg = color + '22';
-        block.style.background = bg;
-        block.style.borderLeftColor = color;
-        block.style.color = color;
-
-        const [sh, sm] = ev.startTime.split(':').map(Number);
-        const [eh, em] = ev.endTime.split(':').map(Number);
-        const startMin = sh * 60 + sm;
-        const endMin = eh * 60 + em;
-        const top = (startMin / 60) * 60; // px per hour = 60
-        const height = Math.max(((endMin - startMin) / 60) * 60, 24);
-
-        block.style.top = `${top}px`;
-        block.style.height = `${height}px`;
-
-        block.innerHTML = `
-            <div class="ev-title">${ev.title}</div>
-            <div class="ev-meta">${ev.startTime.slice(0,5)} – ${ev.endTime.slice(0,5)}${ev.location ? ' · ' + ev.location : ''}</div>
-        `;
-
-        block.addEventListener('click', () => openEditForm(ev));
-        document.getElementById('eventsCol').appendChild(block);
-    });
-}
-
-// ─── FORM ────────────────────────────────────────────────────────────────────
-function newEvent() {
-    editingId = null;
-    document.getElementById('eventId').value = '';
-    document.getElementById('fTitle').value = '';
-    document.getElementById('fLocation').value = '';
-    document.getElementById('fDesc').value = '';
-    document.getElementById('fStart').value = '';
-    document.getElementById('fEnd').value = '';
-    setFormDate(currentDate);
-    selectColor(COLORS[0]);
-    document.getElementById('sidebarTitle').textContent = 'new event';
-    document.getElementById('deleteBtn').style.display = 'none';
-}
-
-function openEditForm(ev) {
-    editingId = ev.id;
-    document.getElementById('fTitle').value = ev.title || '';
-    document.getElementById('fDate').value = ev.date || '';
-    document.getElementById('fStart').value = ev.startTime ? ev.startTime.slice(0,5) : '';
-    document.getElementById('fEnd').value = ev.endTime ? ev.endTime.slice(0,5) : '';
-    document.getElementById('fLocation').value = ev.location || '';
-    document.getElementById('fDesc').value = ev.description || '';
-    selectColor(ev.color || COLORS[0]);
-    document.getElementById('sidebarTitle').textContent = 'edit event';
-    document.getElementById('deleteBtn').style.display = 'inline-block';
-}
-
-function setFormDate(d) {
-    document.getElementById('fDate').value = toDateString(d);
-}
-
-async function saveEvent() {
-    const payload = {
-        title: document.getElementById('fTitle').value.trim(),
-        date: document.getElementById('fDate').value,
-        startTime: document.getElementById('fStart').value,
-        endTime: document.getElementById('fEnd').value,
-        location: document.getElementById('fLocation').value.trim(),
-        description: document.getElementById('fDesc').value.trim(),
-        color: selectedColor
+    // Single source of truth: stress level → color
+    const STRESS_COLORS = {
+        1: '#05ed09',
+        2: '#b8eb10',
+        3: '#f5e10a',
+        4: '#eb960e',
+        5: '#d10404'
     };
 
-    if (!payload.title || !payload.date || !payload.startTime || !payload.endTime) {
-        alert('Please fill in title, date, start and end time.');
-        return;
-    }
+    let currentDate = new Date();
+    let editingId = null;
+    let selectedStress = 1;
 
-    try {
-        const url = editingId ? `${API}/${editingId}` : API;
-        const method = editingId ? 'PUT' : 'POST';
-        const res = await fetch(url, {
-            method,
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
+    // ─── INIT ────────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        buildGrid();
+        buildStressBubbles();
+        setFormDate(currentDate);
+        renderDateLabel();
+        loadEvents();
+        updateNowLine();
+        setInterval(updateNowLine, 60000);
+    });
+
+    // ─── GRID ────────────────────────────────────────────────────────────────────
+    function buildGrid() {
+        const timeCol = document.getElementById('timeCol');
+        const eventsCol = document.getElementById('eventsCol');
+        timeCol.innerHTML = '';
+        eventsCol.querySelectorAll('.hour-line').forEach(el => el.remove());
+        HOURS.forEach(h => {
+            const label = document.createElement('div');
+            label.className = 'time-label';
+            label.textContent = h === 0 ? '' : `${String(h).padStart(2,'0')}:00`;
+            timeCol.appendChild(label);
+            const line = document.createElement('div');
+            line.className = 'hour-line';
+            eventsCol.appendChild(line);
         });
-
-        if (!res.ok) throw new Error('Save failed');
-        newEvent();
-        loadEvents();
-    } catch (e) {
-        alert('Could not save event. Is the backend running?');
-        console.error(e);
     }
-}
 
-async function deleteEvent() {
-    if (!editingId) return;
-    if (!confirm('Delete this event?')) return;
-    try {
-        await fetch(`${API}/${editingId}`, {method: 'DELETE'});
-        newEvent();
-        loadEvents();
-    } catch (e) {
-        alert('Could not delete event.');
+    // ─── DATE ────────────────────────────────────────────────────────────────────
+    function renderDateLabel() {
+        document.getElementById('currentDateLabel').textContent =
+            currentDate.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
     }
-}
 
-// ─── COLOR SWATCHES ──────────────────────────────────────────────────────────
-function buildColorSwatches() {
-    const row = document.getElementById('colorRow');
-    COLORS.forEach(c => {
-        const s = document.createElement('div');
-        s.className = 'color-swatch';
-        s.style.background = c;
-        s.dataset.color = c;
-        s.addEventListener('click', () => selectColor(c));
-        row.appendChild(s);
-    });
-    selectColor(COLORS[0]);
-}
+    function changeDate(delta) {
+        currentDate.setDate(currentDate.getDate() + delta);
+        renderDateLabel();
+        loadEvents();
+    }
 
-function selectColor(color) {
-    selectedColor = color;
-    document.querySelectorAll('.color-swatch').forEach(s => {
-        s.classList.toggle('selected', s.dataset.color === color);
-    });
-}
+    function goToToday() {
+        currentDate = new Date();
+        renderDateLabel();
+        loadEvents();
+    }
 
-// ─── NOW LINE ────────────────────────────────────────────────────────────────
-function updateNowLine() {
-    const line = document.getElementById('nowLine');
-    const now = new Date();
-    const isToday = toDateString(now) === toDateString(currentDate);
-    if (!isToday) { line.style.display = 'none'; return; }
-    const minutes = now.getHours() * 60 + now.getMinutes();
-    line.style.top = `${(minutes / 60) * 60}px`;
-    line.style.display = 'block';
-}
+    function toDateString(d) {
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    // ─── EVENTS FROM API ─────────────────────────────────────────────────────────
+    async function loadEvents() {
+        try {
+            const dateStr = toDateString(currentDate);
+            const res = await fetch(`${API}/date/${dateStr}`);
+            const events = await res.json();
+            renderEvents(events);
+        } catch (e) {
+            console.error('Could not load events:', e);
+        }
+    }
+
+    function renderEvents(events) {
+        document.querySelectorAll('.event-block').forEach(el => el.remove());
+        document.getElementById('emptyState').style.display = events.length === 0 ? 'block' : 'none';
+
+        events.forEach(ev => {
+            const block = document.createElement('div');
+            block.className = 'event-block';
+            block.dataset.id = ev.id;
+
+            // Color is derived entirely from stress level — no stored color field needed
+            const color = STRESS_COLORS[ev.stress] || STRESS_COLORS[1];
+            block.style.background = color + '22';
+            block.style.borderLeftColor = color;
+            block.style.color = color;
+
+            const [sh, sm] = ev.startTime.split(':').map(Number);
+            const [eh, em] = ev.endTime.split(':').map(Number);
+            const startMin = sh * 60 + sm;
+            const endMin = eh * 60 + em;
+            block.style.top = `${(startMin / 60) * 60}px`;
+            block.style.height = `${Math.max(((endMin - startMin) / 60) * 60, 24)}px`;
+
+            block.innerHTML = `
+                <div class="ev-title">${ev.title}</div>
+                <div class="ev-meta">${ev.startTime.slice(0,5)} – ${ev.endTime.slice(0,5)}${ev.location ? ' · ' + ev.location : ''}</div>
+                <div class="ev-meta">${ev.stress ? 'Stress: ' + ev.stress : ''}</div>
+            `;
+
+            block.addEventListener('click', () => openEditForm(ev));
+            document.getElementById('eventsCol').appendChild(block);
+        });
+    }
+
+    // ─── FORM ────────────────────────────────────────────────────────────────────
+    function newEvent() {
+        editingId = null;
+        document.getElementById('eventId').value = '';
+        document.getElementById('fTitle').value = '';
+        document.getElementById('fLocation').value = '';
+        document.getElementById('fDesc').value = '';
+        document.getElementById('fStart').value = '';
+        document.getElementById('fEnd').value = '';
+        setFormDate(currentDate);
+        selectStress(1);
+        document.getElementById('sidebarTitle').textContent = 'new event';
+        document.getElementById('deleteBtn').style.display = 'none';
+    }
+
+    function openEditForm(ev) {
+        editingId = ev.id;
+        document.getElementById('fTitle').value = ev.title || '';
+        document.getElementById('fDate').value = ev.date || '';
+        document.getElementById('fStart').value = ev.startTime ? ev.startTime.slice(0,5) : '';
+        document.getElementById('fEnd').value = ev.endTime ? ev.endTime.slice(0,5) : '';
+        document.getElementById('fLocation').value = ev.location || '';
+        document.getElementById('fDesc').value = ev.description || '';
+        selectStress(ev.stress || 1);
+        document.getElementById('sidebarTitle').textContent = 'edit event';
+        document.getElementById('deleteBtn').style.display = 'inline-block';
+    }
+
+    function setFormDate(d) {
+        document.getElementById('fDate').value = toDateString(d);
+    }
+
+    async function saveEvent() {
+        const payload = {
+            title: document.getElementById('fTitle').value.trim(),
+            date: document.getElementById('fDate').value,
+            startTime: document.getElementById('fStart').value,
+            endTime: document.getElementById('fEnd').value,
+            location: document.getElementById('fLocation').value.trim(),
+            description: document.getElementById('fDesc').value.trim(),
+            stress: selectedStress
+            // no color field — color is derived from stress at render time
+        };
+
+        if (!payload.title || !payload.date || !payload.startTime || !payload.endTime) {
+            alert('Please fill in title, date, start and end time.');
+            return;
+        }
+
+        try {
+            const url = editingId ? `${API}/${editingId}` : API;
+            const method = editingId ? 'PUT' : 'POST';
+            const res = await fetch(url, {
+                method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('Save failed');
+            newEvent();
+            loadEvents();
+        } catch (e) {
+            alert('Could not save event. Is the backend running?');
+            console.error(e);
+        }
+    }
+
+    async function deleteEvent() {
+        if (!editingId) return;
+        if (!confirm('Delete this event?')) return;
+        try {
+            await fetch(`${API}/${editingId}`, {method: 'DELETE'});
+            newEvent();
+            loadEvents();
+        } catch (e) {
+            alert('Could not delete event.');
+        }
+    }
+
+    // ─── STRESS BUBBLES ──────────────────────────────────────────────────────────
+    function buildStressBubbles() {
+        const row = document.getElementById('fStress');
+        for (let i = 1; i <= 5; i++) {
+            const b = document.createElement('div');
+            b.className = 'stress-bubble';
+            b.dataset.level = i;
+            b.textContent = i;
+            b.addEventListener('click', () => selectStress(i));
+            row.appendChild(b);
+        }
+        selectStress(1);
+    }
+
+    function selectStress(level) {
+        selectedStress = level;
+        document.querySelectorAll('.stress-bubble').forEach(b => {
+            b.classList.toggle('selected', parseInt(b.dataset.level) === level);
+        });
+    }
+
+    // ─── NOW LINE ────────────────────────────────────────────────────────────────
+    function updateNowLine() {
+        const line = document.getElementById('nowLine');
+        const now = new Date();
+        const isToday = toDateString(now) === toDateString(currentDate);
+        if (!isToday) { line.style.display = 'none'; return; }
+        const minutes = now.getHours() * 60 + now.getMinutes();
+        line.style.top = `${(minutes / 60) * 60}px`;
+        line.style.display = 'block';
+    }
 </script>
 </body>
 </html>

@@ -19,6 +19,7 @@ public class Event {
     private LocalTime startTime;
     private LocalTime endTime;
     private String color;
+    private double stress;
 
     // --- Getters and Setters ---
 
@@ -45,4 +46,7 @@ public class Event {
 
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
+
+    public double getStress() { return stress; }
+    public void setStress(int stress) { this.stress = stress; }
 }
