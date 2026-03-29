@@ -90,3 +90,17 @@
 
 # > `application.properties` is excluded from version control. Never commit your credentials.
 
+
+
+
+
+# \---
+
+# 
+
+# \## Development Notes
+
+# 
+
+# This project was built with the assistance of \[Claude](https://claude.ai) by Anthropic, which helped guide architecture decisions, debug errors, and implement features throughout development.
+
