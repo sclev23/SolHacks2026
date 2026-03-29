@@ -510,6 +510,59 @@
         ::-webkit-calendar-picker-indicator {
             filter: invert(1);
         }
+
+        /* SEARCH */
+        .search-wrap {
+            position: relative;
+        }
+
+        #searchInput {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.82rem;
+            padding: 8px 12px;
+            width: 220px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        #searchInput:focus { border-color: var(--accent); }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            z-index: 100;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .search-result-item {
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.12s;
+        }
+
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: var(--bg); }
+        .search-result-item .result-title { color: var(--text); margin-bottom: 2px; }
+        .search-result-item .result-meta  { color: var(--muted); font-size: 0.7rem; }
+
+        .search-no-results {
+            padding: 12px 14px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -532,6 +585,10 @@
         </div>
 
         <button class="btn-ghost" onclick="goToToday()">Today</button>
+        <div class="search-wrap">
+            <input type="text" id="searchInput" placeholder="search events..." oninput="handleSearch(event)">
+            <div id="searchResults" class="search-results" style="display:none"></div>
+        </div>
         <button class="btn" onclick="newEvent()">+ New Event</button>
     </div>
 </header>
@@ -1065,6 +1122,69 @@
             b.classList.toggle('selected', parseInt(b.dataset.level) === level);
         });
     }
+
+    // ─── SEARCH ───────────────────────────────────────────────────────────────────
+    let searchTimeout = null;
+
+    async function handleSearch(e) {
+        const query = e.target.value.trim();
+        const resultsBox = document.getElementById('searchResults');
+
+        if (!query) {
+            resultsBox.style.display = 'none';
+            resultsBox.innerHTML = '';
+            return;
+        }
+
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`${API}/search?title=${encodeURIComponent(query)}`, {
+                    credentials: 'include'
+                });
+                const events = await res.json();
+                renderSearchResults(events, resultsBox);
+            } catch (e) {
+                console.error('Search failed:', e);
+            }
+        }, 300);
+    }
+
+    function renderSearchResults(events, box) {
+        box.innerHTML = '';
+        box.style.display = 'block';
+
+        if (!events.length) {
+            box.innerHTML = '<div class="search-no-results">no events found</div>';
+            return;
+        }
+
+        events.forEach(ev => {
+            const item = document.createElement('div');
+            item.className = 'search-result-item';
+            item.innerHTML = `
+                <div class="result-title">${ev.title}</div>
+                <div class="result-meta">${ev.date} · ${to12hr(ev.startTime)} – ${to12hr(ev.endTime)}</div>
+            `;
+            item.addEventListener('click', () => {
+                const localDateString = ev.date.replace(/-/g, '\/');
+                currentDate = new Date(localDateString);
+                setView('day');
+                openEditForm(ev);
+                box.style.display = 'none';
+                document.getElementById('searchInput').value = '';
+            });
+            box.appendChild(item);
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-wrap')) {
+            document.getElementById('searchResults').style.display = 'none';
+        }
+    });
+
+</script>
 
 
 </script>

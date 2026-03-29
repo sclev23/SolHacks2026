@@ -41,6 +41,20 @@ public class EventController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<Event>> searchEvents(
+            @RequestParam String title,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        // 1. Identify who is searching
+        String userId = CookieUtil.getOrCreateUserId(request, response);
+
+        // 2. Fetch only THEIR events matching the title
+        List<Event> results = eventService.searchEvents(userId, title);
+
+        return ResponseEntity.ok(results);
+    }
 
     // POST /events — create a new event
     @PostMapping

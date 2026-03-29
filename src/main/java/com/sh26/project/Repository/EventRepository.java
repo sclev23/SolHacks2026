@@ -17,4 +17,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     // Get all events ordered by date then start time
     List<Event> findByUserIdOrderByDateAscStartTimeAsc(String userId);
+
+    List<Event> findByUserIdAndTitleContainingIgnoreCase(String userId, String title);
 }

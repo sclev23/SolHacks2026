@@ -55,6 +55,9 @@ public class EventService {
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
         eventRepository.deleteById(id);
     }
+    public List<Event> searchEvents(String userId, String title) {
+        return eventRepository.findByUserIdAndTitleContainingIgnoreCase(userId, title);
+    }
 
     // --- Validation ---
     private void validateEvent(Event event) {
