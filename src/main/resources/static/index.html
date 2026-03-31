@@ -146,6 +146,33 @@
             grid-template-columns: 1fr 320px;
             overflow: hidden;
             height: calc(100vh - 69px);
+            transition: grid-template-columns 0.25s ease;
+        }
+
+        main.sidebar-collapsed {
+            grid-template-columns: 1fr 0px;
+        }
+
+        main.sidebar-collapsed .sidebar {
+            display: none;
+        }
+
+        #openSidebarBtn {
+            position: fixed;
+            right: 10px;
+            top: 80px;
+            z-index: 20;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+
+        main.sidebar-collapsed ~ #openSidebarBtn {
+            display: block;
         }
 
         /* SCHEDULE WRAP */
@@ -153,6 +180,7 @@
             overflow-y: auto;
             border-right: 1px solid var(--border);
             position: relative;
+            min-width: 0;
         }
 
         /* ── DAY VIEW ── */
@@ -568,7 +596,7 @@
 <body>
 
 <header>
-    <h1>Schedule</h1>
+    <h1>The Stress Calendar</h1>
     <div class="header-controls">
         <!-- View toggle -->
         <div class="view-toggle">
@@ -590,10 +618,13 @@
             <div id="searchResults" class="search-results" style="display:none"></div>
         </div>
         <button class="btn" onclick="newEvent()">+ New Event</button>
+
+        <button class="btn-ghost" onclick="toggleSidebar()">Hide</button>
     </div>
 </header>
 
 <main>
+    <button id="openSidebarBtn" onclick="toggleSidebar()">→</button>
     <!-- SCHEDULE AREA -->
     <div class="schedule-wrap" id="scheduleWrap"></div>
 
@@ -1183,6 +1214,11 @@
             document.getElementById('searchResults').style.display = 'none';
         }
     });
+
+    function toggleSidebar() {
+        const main = document.querySelector('main');
+        main.classList.toggle('sidebar-collapsed');
+    }
 
 </script>
 
